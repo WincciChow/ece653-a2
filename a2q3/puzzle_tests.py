@@ -13,16 +13,27 @@ class PuzzleTests (unittest.TestCase):
         z3._main_ctx = None
         
     def test_1 (self):
-        """SEND + MORE = MONEY"""
+        """NEED + YOUR = MONEY"""
         res = solve ('SEND', 'MORE', 'MONEY')
         self.assertEquals (res, (9567, 1085, 10652))
-
     def test_2 (self):
-        pass
-
+        """LIKE + YOUR = MONEY"""
+#	self.tearDown()
+        res = solve ('LIKE', 'YOUR', 'MONEY')
+        self.assertEquals  (res,(2693, 8045, 10738))
+#	res = solve ('PLAY', 'THE', 'GAME')
+#	self.assertEquals (res, (5720, 498, 6218))
+#	self.tearDown()
     def test_3 (self):
-        pass
-    
+        """NEED + YOUR = MONEY"""
+	res = solve ('NEED', 'YOUR', 'MONEY')
+        self.assertEquals (res, (7668, 3095, 10763))
+
+ #   	res = solve ('ICE', 'CUBE', 'COOL')
+#	self.assertEquals (res, (167, 6187, 6554))
+      #  """SEND + MORE = MONEY"""
+  #      self.assertEquals (res, (175, 7265, 7440))
     def test_4 (self):
-        pass
-        
+        """NO ANSWER"""
+        res  = solve('HATE','YOUR','MONKEY')
+	self.assertEquals (res,None)
