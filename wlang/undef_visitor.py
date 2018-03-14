@@ -22,7 +22,7 @@
 from __future__ import print_function
 
 import wlang.ast
-            
+
 class UseDefFact (object):
     """A dataflow fact for a statement.  Keeps track of all variables
 defined up to the statement and all uses without a definition.
@@ -63,6 +63,7 @@ defined up to the statement and all uses without a definition.
     def mark_def (self, var):
         """Marks variable as defined"""
         self._defs.add (var)
+            
 class UndefVisitor (wlang.ast.AstVisitor):
     """Computes all variables that are used before being defined"""
     def __init__ (self):
@@ -71,7 +72,6 @@ class UndefVisitor (wlang.ast.AstVisitor):
 
     def get_defs (self):
         return self._df.get_defs ()
-
     def get_undefs (self):
         return self._df.get_undefs ()
     
@@ -86,7 +86,7 @@ class UndefVisitor (wlang.ast.AstVisitor):
         for n in node.stmts:
             df = self.visit (n, df=df)
         return df
-    
+
     def visit_IntVar (self, node, *args, **kwargs):
         df = kwargs['df']
         df.mark_use (node)
@@ -113,7 +113,7 @@ class UndefVisitor (wlang.ast.AstVisitor):
     def visit_HavocStmt (self, node, *args, **kwargs):
         df = kwargs['df']
         for v in node.vars:
-            df = self.vist (v, df=df)
+            df.mark_def (v)
         return df
     
     def visit_AssertStmt (self, node, *args, **kwargs):
@@ -152,4 +152,6 @@ def main ():
 if __name__ == '__main__':
     import sys
     sys.exit (main())
-        
+    
+    
+    

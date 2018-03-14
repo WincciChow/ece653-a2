@@ -18,6 +18,12 @@ from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS, generic_main  # noqa
 
 
+__all__ = [
+    'WhileLangParser',
+    'WhileLangSemantics',
+    'main'
+]
+
 KEYWORDS = {}
 
 
@@ -88,7 +94,7 @@ class WhileLangParser(Parser):
 
         def block0():
             self._stmt_()
-        self._positive_gather(block0, sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _stmt_(self):
@@ -213,7 +219,7 @@ class WhileLangParser(Parser):
 
         def block0():
             self._name_()
-        self._positive_gather(block0, sep0)
+        self._positive_closure(block0, sep=sep0)
 
     @graken()
     def _bexp_(self):
@@ -226,7 +232,7 @@ class WhileLangParser(Parser):
         def block0():
             self._bterm_()
             self.name_last_node('args')
-        self._positive_gather(block0, sep0)
+        self._positive_closure(block0, sep=sep0)
         self.ast._define(
             ['args'],
             []
@@ -243,7 +249,7 @@ class WhileLangParser(Parser):
         def block0():
             self._bfactor_()
             self.name_last_node('args')
-        self._positive_gather(block0, sep0)
+        self._positive_closure(block0, sep=sep0)
         self.ast._define(
             ['args'],
             []
@@ -556,18 +562,15 @@ class WhileLangSemantics(object):
 def main(filename, startrule, **kwargs):
     with open(filename) as f:
         text = f.read()
-    parser = WhileLangParser()
+    parser = WhileLangParser(parseinfo=False)
     return parser.parse(text, startrule, filename=filename, **kwargs)
-
 
 if __name__ == '__main__':
     import json
-    from grako.util import asjson
-
     ast = generic_main(main, WhileLangParser, name='WhileLang')
     print('AST:')
     print(ast)
     print()
     print('JSON:')
-    print(json.dumps(asjson(ast), indent=2))
+    print(json.dumps(ast, indent=2))
     print()

@@ -29,7 +29,7 @@ class WlangSemantics (object):
         if len (ast.stmts) == 1:
             return ast.stmts [0]
         return ast
-
+    
     def stmt_list (self, ast, *args, **kwargs):
         return wlang.ast.StmtList (ast)
 
@@ -38,16 +38,16 @@ class WlangSemantics (object):
 
     def skip_stmt (self, ast, *args, **kwargs):
         return wlang.ast.SkipStmt ()
-
+    
     def print_state_stmt (self, ast, *args, **kwargs):
         return wlang.ast.PrintStateStmt()
 
     def if_stmt (self, ast, *args, **kwargs):
         return wlang.ast.IfStmt (ast.cond, ast.then_stmt, ast.else_stmt)
-
+    
     def while_stmt (self, ast, *args, **kwargs):
-        return wlang.ast.WhileStmt (ast.cond, ast.body, ast.inv)
-
+        return wlang.ast.WhileStmt (ast.cond, ast.body)
+    
     def assert_stmt (self, ast, *args, **kwargs):
         return wlang.ast.AssertStmt (ast.cond)
 
@@ -57,48 +57,48 @@ class WlangSemantics (object):
     def havoc_stmt (self, ast, *args, **kwargs):
         assert len (ast) >= 1
         return wlang.ast.HavocStmt (ast.vars)
-
+    
     def bool_const (self, ast, *args, **kwargs):
         if str(ast) == 'true':
             val = True
         else:
             val = False
         return wlang.ast.BoolConst (val)
-
+        
     def bexp (self, ast, *args, **kwargs):
         return self.bterm (ast, args, kwargs)
-
+    
     def bterm (self, ast, *args, **kwargs):
         if ast.op is None: return ast.args
         assert len (ast.args) > 1
-        return wlang.ast.BExp (ast.op, ast.args)
-
+        return wlang.ast.BExp (str(ast.op), ast.args)
+    
     def bfactor (self, ast, *args, **kwargs):
         if ast.op is not None:
-            return wlang.ast.BExp (ast.op, [ast.arg])
+            return wlang.ast.BExp (str (ast.op), [ast.arg])
         return ast.arg
-
+    
     def rexp (self, ast, *args, **kwargs):
         return wlang.ast.RelExp (ast.lhs, str (ast.op), ast.rhs)
-
+    
     def aexp (self, ast, *args, **kwargs):
         return ast
-
+    
     def addition (self, ast, *args, **kwargs):
         return self.subtraction (ast, *args, **kwargs)
-
+    
     def subtraction (self, ast, *args, **kwargs):
         return self.mult (ast, *args, **kwargs)
-
+    
     def term (self, ast, *args, **kwargs):
         return ast
-
+    
     def mult (self, ast, *args, **kwargs):
         return self.division (ast, *args, **kwargs)
-
+    
     def division (self, ast, *args, **kwargs):
         return wlang.ast.AExp (str (ast.op), [ast.lhs, ast.rhs])
-
+    
     def name (self, ast, *args, **kwargs):
         return wlang.ast.IntVar (ast)
 

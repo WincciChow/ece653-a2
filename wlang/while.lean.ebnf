@@ -15,7 +15,7 @@ stmt_list
 
 stmt
     =
-    | skip_stmt
+      skip_stmt
     | asgn_stmt
     | block_stmt
     | if_stmt
@@ -131,37 +131,13 @@ rop
 
 aexp
     =
-    addition | subtraction | term
-    ;
-
-
-addition
-    =
-    term '+' ~ aexp
-    ;
-
-
-subtraction
-    =
-    term '-' ~ aexp
+    ('+' | '-').{term}
     ;
 
 
 term
     =
-    mult | division | factor
-    ;
-
-
-mult
-    =
-    factor '*' ~ term
-    ;
-
-
-division
-    =
-    factor '/' ~ term
+    ('*' | '/').{factor}
     ;
 
 
@@ -197,7 +173,7 @@ number
 
 INT
     =
-    /0[xX][0-9a-fA-F]+|[0-9]+/
+    /0[xX][0-9a-fA-F]+|0[0-9]+|[1-9][0-9]*/
     ;
 
 
@@ -211,3 +187,4 @@ NEWLINE
     =
     /[\u000C\r\n]+/ ~
     ;
+

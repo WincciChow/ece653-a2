@@ -33,16 +33,16 @@ class Ast(object):
         return buf.getvalue ()
     def __repr__ (self):
         return str(self)
-
+    
 class StmtList(Ast):
     """A list of statements"""
     def __init__ (self, s):
         self.stmts = s
-
+        
     def __eq__ (self, other):
         return type(self) == type(other) and \
             self.stmts == other.stmts
-
+    
 class Stmt (Ast):
     """A single statement"""
     pass
@@ -64,7 +64,7 @@ class AsgnStmt (Stmt):
     def __eq__ (self, other):
         return type(self) == type(other) and \
             self.lhs == other.lhs and self.rhs == other.rhs
-
+    
 
 class IfStmt (Stmt):
     """If-then-else statement"""
@@ -82,32 +82,30 @@ class IfStmt (Stmt):
 
 class WhileStmt (Stmt):
     """While statement"""
-    def __init__(self, cond, body, inv = None):
+    def __init__(self, cond, body):
         self.cond = cond
         self.body = body
-        self.inv = inv
-
+        
     def __eq__ (self, other):
         return type(self) == type(other) and \
             self.cond == other.cond and \
-            self.body == other.body and \
-            self.inv == other.inv
+            self.body == other.body 
 
 class AssertStmt (Stmt):
     """Assert statement"""
     def __init__ (self, cond):
         self.cond = cond
     def __eq__ (self, other):
-        return type(self) == type(other) and \
-            self.cond == other.cond
-
+        type(self) == type(other) and \
+            self.cond == other.cond 
+        
 class AssumeStmt (Stmt):
     """Assume statement"""
     def __init__ (self, cond):
         self.cond = cond
     def __eq__ (self, other):
         return type(self) == type(other) and \
-            self.cond == other.cond
+            self.cond == other.cond 
 
 class HavocStmt (Stmt):
     """Havoc statement"""
@@ -116,37 +114,33 @@ class HavocStmt (Stmt):
     def __eq__ (self, other):
         return type(self) == type(other) and \
             self.vars == other.vars
-
+    
 class Exp (Ast):
     """An expression"""
     def __init__ (self, op, args):
-        if isinstance(op, list):
-            self.op = op[0]
-        else:
-            self.op = op
-
+        self.op = op
         self.args = args
     def __eq__ (self, other):
         return type(self) == type(other) and \
             self.op == other.op and self.args == other.args
-
+        
     def arg (self, i):
         return self.args [i]
     def is_binary (self):
         return len (self.args) == 2
     def is_unary (self):
         return len (self.args) == 1
-
+        
 class BExp(Exp):
     """A Boolean expression"""
     def __init__ (self, op, args):
         super (BExp, self).__init__ (op, args)
-
+    
 class RelExp(BExp):
     """A relational comparison expression"""
     def __init__ (self, lhs, op, rhs):
         super (RelExp, self).__init__ (op, [lhs, rhs])
-
+    
 class AExp (Exp):
     """An arithmetic expression"""
     def __init__ (self, op, args):
@@ -168,7 +162,7 @@ class Const (Ast):
 
     def __hash__ (self):
         return hash (self.val)
-
+        
 class IntConst(Const):
     """An integer constant"""
     def __init__(self, val):
@@ -190,10 +184,10 @@ class IntVar (Ast):
         return repr (self.name)
     def __eq__ (self, other):
         return type(self) == type(other) and \
-            self.name == other.name
+            self.name == other.name        
     def __hash__ (self):
         return hash (self.name)
-
+    
 def parse_file (filename):
     with open (filename) as f:
         text = f.read ()
@@ -207,12 +201,12 @@ def parse_string (v, filename='<builit-in>'):
     ast = p.parse (v, 'start', filename=filename,
                    semantics=sem.WlangSemantics ())
     return ast
-
+    
 class AstVisitor(object):
     """Base class for AST visitor"""
     def __init__(self):
         pass
-
+    
     def visit (self, node, *args, **kwargs):
         """Visit a node."""
         method = 'visit_' + node.__class__.__name__
@@ -222,7 +216,7 @@ class AstVisitor(object):
     def visit_BoolConst (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Const.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_IntConst (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Const.__name__)
         return visitor (node, *args, **kwargs)
@@ -230,51 +224,51 @@ class AstVisitor(object):
     def visit_AExp (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Exp.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_BExp (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Exp.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_RelExp (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + BExp.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_IntVar (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + AExp.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_SkipStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+    
     def visit_PrintStateStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_AsgnStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+       
     def visit_IfStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+       
     def visit_WhileStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_AssertStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+        
     def visit_AssumeStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+       
     def visit_HavocStmt (self, node, *args, **kwargs):
         visitor = getattr (self, 'visit_' + Stmt.__name__)
         return visitor (node, *args, **kwargs)
-
+        
 class PrintVisitor (AstVisitor):
     """A printing visitor"""
     def __init__ (self, out = None):
@@ -283,7 +277,7 @@ class PrintVisitor (AstVisitor):
             self.out = sys.stdout
         else:
             self.out = out
-
+            
     def _indent (self, **kwargs):
         self._write (' '*kwargs['indent'])
     def _write (self, v):
@@ -294,23 +288,17 @@ class PrintVisitor (AstVisitor):
     def _close_brkt (self, **kwargs):
         if not kwargs['no_brkt']:
             self._write (')')
-
+        
     def visit (self, node, indent=0, no_brkt=False):
         super (PrintVisitor, self).visit (node,
                                           indent=indent, no_brkt=no_brkt)
-
+        
     def visit_IntVar (self, node, *args, **kwargs):
         self._write (node.name)
-
-    def visit_BoolConst (self, node, *args, **kwargs):
-        if node.val:
-            self._write ('true')
-        else:
-            self._write ('false')
-
-    def visit_IntConst (self, node, *args, **kwargs):
+        
+    def visit_Const (self, node, *args, **kwargs):
         self._write (node.val)
-
+        
     def visit_Exp (self, node, *args, **kwargs):
         if node.is_unary ():
             self._write (node.op)
@@ -324,12 +312,12 @@ class PrintVisitor (AstVisitor):
                 self._write (' ')
                 self.visit (a)
             self._close_brkt (**kwargs)
-
+            
     def visit_SkipStmt (self, node, *args, **kwargs):
         self._write ('skip')
     def visit_PrintStateStmt (self, node, *args, **kwargs):
         self._write ('print_state')
-
+        
     def visit_StmtList (self, node, *args, **kwargs):
         if node.stmts is None or len (node.stmts) == 0:
             return
@@ -339,27 +327,27 @@ class PrintVisitor (AstVisitor):
             self._indent (**kwargs)
             self._write('{\n')
             indent_lvl = indent_lvl + 2
-
+            
         self._indent (indent=indent_lvl)
         self.visit (node.stmts [0], indent=kwargs['indent'] + 2)
-
+        
         if len (node.stmts) > 1:
             for s in node.stmts[1:]:
                 self._write (';\n')
                 self._indent (indent=indent_lvl)
                 self.visit (s, indent=indent_lvl)
-
+                
         if len (node.stmts) > 1:
             self._write ('\n')
             self._indent (**kwargs)
             self._write ('}')
-
+                
 
     def visit_AsgnStmt (self, node, *args, **kwargs):
         self.visit (node.lhs)
         self._write (' := ')
         self.visit (node.rhs, no_brkt=True)
-
+        
     def visit_AssertStmt (self, node, *args, **kwargs):
         self._write ('assert ')
         self.visit (node.cond, no_brkt=True)
@@ -395,5 +383,8 @@ class PrintVisitor (AstVisitor):
         self.visit (node.cond, no_brkt=True)
         self._write (' do')
         self._write ('\n')
-        self._indent (indent=kwargs['indent'] + 2)
+        self._indent (indnet=kwargs['indent'] + 2)
         self.visit (node.body, indent=kwargs['indent'] + 2)
+
+        
+        

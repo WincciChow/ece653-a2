@@ -39,6 +39,7 @@ class StatsVisitor (wlang.ast.AstVisitor):
     def get_num_vars (self):
         """Returns number of distinct variables visited"""
         return len (self._vars)
+        
     
     def visit_StmtList (self, node, *args, **kwargs):
         if node.stmts is None or len (node.stmts) == 0:
@@ -52,7 +53,7 @@ class StatsVisitor (wlang.ast.AstVisitor):
     
     def visit_IntVar (self, node, *args, **kwargs):
         self._vars.add (node)
-    
+            
     def visit_Const (self, node, *args, **kwargs):
         pass
     

@@ -20,17 +20,25 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import unittest
-import wlang.ast as ast
-import wlang.sym
+from __future__ import print_function
 
-class TestSym (unittest.TestCase):
-    def test_one (self):
-        prg1 = "{a:=1;b:=2;c:=1}; if(a>2 and not b=2) then{c:=2} else{a:=a-1}; c:=c+1; c:=c*1;c:=c/1; if(a=1 or b=2) then{d:=1};havoc x,y; while (y>10) do{y:=y-3}; assume x > 10; assert x > 15;skip; print_state"
-        ast1 = ast.parse_string (prg1)
-        sym = wlang.sym.SymExec ()
-        st = wlang.sym.SymState ()
-        out = [s for s in sym.run (ast1, st)]
-        self.assertEquals (len(out), 12)
-        
-        
+import wlang.parser as parser
+import wlang.ast as ast
+import wlang.semantics as sem
+
+import sys
+
+def main ():
+    a = ast.parse_file (sys.argv [1])
+    pv = ast.PrintVisitor (out=sys.stdout)
+    pv.visit (a)
+    sys.stdout.write ('\n')
+
+    b = ast.parse_string (str (a))
+
+    print (b)
+
+    print ('a == b', a == b, 'a is b', a is b)
+    
+if __name__ == '__main__':
+    main ()
