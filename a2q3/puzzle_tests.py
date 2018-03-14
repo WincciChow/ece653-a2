@@ -21,18 +21,12 @@ class PuzzleTests (unittest.TestCase):
 #	self.tearDown()
         res = solve ('LIKE', 'YOUR', 'MONEY')
         self.assertEquals  (res,(2693, 8045, 10738))
-#	res = solve ('PLAY', 'THE', 'GAME')
-#	self.assertEquals (res, (5720, 498, 6218))
-#	self.tearDown()
+
     def test_3 (self):
         """NEED + YOUR = MONEY"""
 	res = solve ('NEED', 'YOUR', 'MONEY')
         self.assertEquals (res, (7668, 3095, 10763))
 
- #   	res = solve ('ICE', 'CUBE', 'COOL')
-#	self.assertEquals (res, (167, 6187, 6554))
-      #  """SEND + MORE = MONEY"""
-  #      self.assertEquals (res, (175, 7265, 7440))
     def test_4 (self):
         """NO ANSWER"""
         res  = solve('HATE','YOUR','MONKEY')
